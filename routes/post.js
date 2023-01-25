@@ -2,11 +2,14 @@ const router = require('express').Router();
 const postController = require('../controllers/post');
 const verifyToken = require('../middleware/auth');
 
-const { getPosts, createPost, getPostsByCategory } = postController;
+const { getPosts, createPost, getPostsByCategory, getPostsByUser } =
+  postController;
 
-router.get('/get-posts-by-category/:category', getPostsByCategory);
+router.get('/all', getPosts);
 
-router.get('/get-posts', getPosts);
+router.get('/user/:type', verifyToken, getPostsByUser);
+
+router.get('/category/:category', getPostsByCategory);
 
 router.post('/create-post', verifyToken, createPost);
 
