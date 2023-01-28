@@ -24,27 +24,6 @@ exports.getPostsByCategory = async (req, res) => {
   }
 };
 
-exports.getPostsByUser = async (req, res) => {
-  const { type } = req.params;
-  const fieldOfRequestPosts = `${type}Posts`; //createdPosts or savedPosts
-  try {
-    const user = await User.findById(req.userId)
-      .select(fieldOfRequestPosts)
-      .populate({
-        path: fieldOfRequestPosts,
-        select: 'imageUrl _id',
-        populate: {
-          path: 'creator',
-          select: 'name avatarUrl',
-        },
-      });
-
-    res.status(200).json({ success: true, posts: user[fieldOfRequestPosts] });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 exports.createPost = async (req, res) => {
   const { title, message, category, imageUrl } = req.body;
 
@@ -65,5 +44,49 @@ exports.createPost = async (req, res) => {
     res.status(200).json({ post: newPost });
   } catch (err) {
     console.error(err);
+  }
+};
+
+exports.getPostDetail = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const foundPost = await Post.findById(id)
+      .populate({
+        path: 'creator',
+        select: 'avatarUrl name',
+      })
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'creator',
+          select: 'avatarUrl name',
+        },
+      });
+
+    const samePosts = await Post.find({ category: foundPost.category })
+      .select('imageUrl creator _id')
+      .populate('creator', 'name avatarUrl');
+    res.status(200).json({ post: foundPost, samePosts });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Interval server error' });
+  }
+};
+
+exports.getPostsBySearchQuery = async (req, res) => {
+  const { searchQuery } = req.params;
+  try {
+    const posts = await Post.find({
+      $or: [
+        { title: { $regex: searchQuery, $options: 'i' } },
+        { message: { $regex: searchQuery, $options: 'i' } },
+      ],
+    })
+      .select('imageUrl creator _id')
+      .populate('creator', 'name avatarUrl');
+    res.status(200).json({ success: true, posts });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Interval server error' });
   }
 };

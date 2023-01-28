@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const postRouter = require('./routes/post');
 const authRouter = require('./routes/auth');
 const fileRouter = require('./routes/file');
+const userRouter = require('./routes/user');
+const commentRouter = require('./routes/comment');
 const mkdirp = require('mkdirp');
 const multer = require('multer');
 
@@ -68,8 +70,10 @@ app.use(multer({ storage: fileStorage, fileFilter }).single('image'));
 app.use(express.json());
 
 app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
 app.use('/api/post', postRouter);
 app.use('/api/file', fileRouter);
+app.use('/api/comment', commentRouter);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

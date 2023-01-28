@@ -1,0 +1,8 @@
+POST http://localhost:5000/api/comment
+Content-Type: application/json
+
+
+{ "message":"very nice",
+  "userId": "63d018757abc39c0322754d3",
+  "postId": "63d0cd567562160d8e628028" 
+}
