@@ -4,7 +4,7 @@ const User = require('../models/user.js');
 exports.getPosts = async (req, res) => {
   try {
     const posts = await Post.find()
-      .select('imageUrl creator _id')
+      .select('imageUrl creator savingUsers _id')
       .populate('creator', 'name avatarUrl');
     res.status(200).json({ success: true, posts });
   } catch (error) {
@@ -16,7 +16,7 @@ exports.getPostsByCategory = async (req, res) => {
   const { category } = req.params;
   try {
     const posts = await Post.find({ category })
-      .select('imageUrl creator _id')
+      .select('imageUrl savingUsers creator _id')
       .populate('creator', 'name avatarUrl');
     res.status(200).json({ success: true, posts });
   } catch (error) {
@@ -64,7 +64,7 @@ exports.getPostDetail = async (req, res) => {
       });
 
     const samePosts = await Post.find({ category: foundPost.category })
-      .select('imageUrl creator _id')
+      .select('imageUrl savingUsers creator _id')
       .populate('creator', 'name avatarUrl');
     res.status(200).json({ post: foundPost, samePosts });
   } catch (error) {
@@ -82,7 +82,7 @@ exports.getPostsBySearchQuery = async (req, res) => {
         { message: { $regex: searchQuery, $options: 'i' } },
       ],
     })
-      .select('imageUrl creator _id')
+      .select('imageUrl savingUsers creator _id')
       .populate('creator', 'name avatarUrl');
     res.status(200).json({ success: true, posts });
   } catch (error) {

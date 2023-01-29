@@ -10,3 +10,14 @@ exports.deleteFile = async (req, res) => {
   deleteFile(filePath);
   res.status(200).json({ message: 'remove successfully!' });
 };
+
+exports.downloadFile = async (req, res) => {
+  const { imageName } = req.params;
+  try {
+    const file = `uploads/${imageName}`;
+    res.download(file);
+  } catch (error) {
+    console.error(error);
+    res.status(404).json({ message: 'Interval server error' });
+  }
+};

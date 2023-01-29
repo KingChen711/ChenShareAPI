@@ -18,6 +18,11 @@ const postsSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  savingUsers: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'User',
+    default:[]
+  },
   comments: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'Comment',

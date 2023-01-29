@@ -6,6 +6,6 @@ const { login, getUser } = authController;
 
 router.post('/login', login);
 
-router.post('/get-user', verifyToken, getUser);
+router.get('/user', verifyToken, getUser);
 
 module.exports = router;

@@ -10,6 +10,8 @@ const userRouter = require('./routes/user');
 const commentRouter = require('./routes/comment');
 const mkdirp = require('mkdirp');
 const multer = require('multer');
+const sharp = require('sharp');
+const path = require('path');
 
 const app = express();
 
@@ -74,6 +76,26 @@ app.use('/api/user', userRouter);
 app.use('/api/post', postRouter);
 app.use('/api/file', fileRouter);
 app.use('/api/comment', commentRouter);
+
+app.get('/uploads/:filename/:size', async (req, res) => {
+  // Find the file
+  const filePath = path.join(__dirname, 'uploads', req.params.filename);
+
+  // Resize the image
+  const size = req.params.size;
+  let resizedImage = await sharp(filePath)
+    .resize({ width: parseInt(size) })
+
+  //covert to webp
+  const webp = req.headers.accept && req.headers.accept.includes('image/webp');
+  if (webp) {
+    resizedImage = resizedImage.webp();
+  }
+
+  // Send the resized image to the client
+  res.contentType('image/jpeg');
+  res.send(await resizedImage.toBuffer());
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
