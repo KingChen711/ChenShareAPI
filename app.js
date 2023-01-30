@@ -83,17 +83,16 @@ app.get('/uploads/:filename/:size', async (req, res) => {
 
   // Resize the image
   const size = req.params.size;
-  let resizedImage = await sharp(filePath)
-    .resize({ width: parseInt(size) })
-
+  let resizedImage = await sharp(filePath).resize({ width: parseInt(size) });
+  res.contentType('image/jpeg');
   //covert to webp
   const webp = req.headers.accept && req.headers.accept.includes('image/webp');
   if (webp) {
     resizedImage = resizedImage.webp();
+    res.contentType('image/webp');
   }
 
   // Send the resized image to the client
-  res.contentType('image/jpeg');
   res.send(await resizedImage.toBuffer());
 });
 

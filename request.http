@@ -6,3 +6,7 @@ Content-Type: application/json
   "userId": "63d018757abc39c0322754d3",
   "postId": "63d0cd567562160d8e628028" 
 }
+
+
+###
+DELETE http://localhost:5000/api/file/delete2
